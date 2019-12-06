@@ -1,0 +1,40 @@
+*{
+    box-sizing: border-box;
+
+}
+
+.container{
+    margin: 50px auto;
+    position: relative;
+    overflow: hidden;
+    width: 450px;
+    height: 800px;
+    border: 1px solid #000;
+
+}
+
+.container-field{
+    width: 450px;
+    height: 800px;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    flex-wrap: wrap;
+    /* position: absolute; */
+    bottom:0;
+    background: coral;
+
+}
+
+.exel{
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+}
+
+.figure{
+    width: 50px;
+    height: 50px;
+    background: black;
+}
+
