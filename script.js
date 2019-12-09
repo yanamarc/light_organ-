@@ -1,55 +1,47 @@
-let field = document.createElement('div');
-field.classList.add('container-field');
 
-for(let i=1; i<160; i++){
-    let exel = document.createElement('div');
-    exel.classList.add('exel');
-    field.appendChild(exel);
+var audio, context, analyser, src, array;
+var field = document.createElement("div");
+field.classList.add("container-field");
+
+for (var i = 0; i < 144; i++) {
+    var cell = document.createElement("div");
+    cell.classList.add("exel");
+    field.appendChild(cell);
 }
 
-let container = document.getElementsByClassName('container')[0];
+var container = document.getElementsByClassName("container")[0];
 container.appendChild(field);
 
-let exel = document.getElementsByClassName('exel');
-let i = 0;
+audio = document.getElementById("audio");
 
-for (let y=16; y>0; y--) {
-    for (let x=1; x<9; x++){
-        exel[i].setAttribute('posX', x);
-        exel[i].setAttribute('posY', y);
-        i++;
+audio.addEventListener("canplay", () => {
+    console.log("play");
+    if (!context) {
+        preparation();
+    } else {
+        loop();
     }
-}
-    
-let x= 5, y = 10;
-let mainArr = [
-    [1, 0],
-    [0, 1],
-    [1, 1]
-]
+});
 
-let currentFigure = 0;
-    square = 0;
-
-function create(){
-    function getRandom(){
-        return Math.round(Math.random()*(mainArr.length-1))
-    }
+function preparation() {
+    context = new AudioContext();
+    analyser = context.createAnalyser();
+    src = context.createMediaElementSource(audio);
+    src.connect(analyser);
+    analyser.connect(context.destination);
+    analyser.fftSize = 64;
+    loop();
 }
 
-currentFigure = getRandom();
-
-square = [
-    document.querySelector(`[posX = "${x}"] [posY = "${y}"] `),
-    document.querySelector (`[posX = "${x + mainArr[currentFigure][0]}"][posY = "${y + mainArr[currentFigure][0]}"]`),
-    document.querySelector (`[posX = "${x + mainArr[currentFigure][1]}"][posY = "${y + mainArr[currentFigure][0]}"]`),
-    document.querySelector (`[posX = "${x + mainArr[currentFigure][0]}"][posY = "${y + mainArr[currentFigure][1]}"]`),
-    document.querySelector (`[posX = "${x + mainArr[currentFigure][1]}"][posY = "${y + mainArr[currentFigure][1]}"]`),
-]
-
-for (let i=0; i<square.length; i++) {
-    square[i].classList.add('figure');
+function loop() {
+    window.requestAnimationFrame(loop);
+    array = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(array);
+    document.querySelectorAll(".exel").forEach((el, index) => {
+        const xfactor = array[index];
+        const r = xfactor + 250 * (index / xfactor);
+        const g = 250 * (index / xfactor);
+        const b = 50;
+        el.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    });
 }
-
-
-create();
